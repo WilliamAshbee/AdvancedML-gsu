@@ -33,14 +33,19 @@ for dna in sequences:
 
 def PCAEIGS(data):
 
+    if data.shape == (120,264):
+        print('dna')
+
     A = data.T
 
     Amean = np.mean(A,axis = (1),keepdims=True)
 
-    Abar = A-Amean
+    Abar = A-Amean #broadcasting occurs
 
-    AbAbT = Abar.dot(Abar.T)
-    assert AbAbT.shape[0]==AbAbT.shape[1]
+    AbAbT = Abar.dot(Abar.T) #
+
+    assert AbAbT.shape[0]==AbAbT.shape[1] #square matrix
+
     eigs = np.linalg.eig(AbAbT)
 
     return (eigs), Abar
@@ -69,12 +74,19 @@ args.reverse()
 for index in args:
     assert testEigs[0][index] == expectedValues[index]
     for el in range(len(testEigs[1][index])):
+        assert el == 0 or el == 1
         assert testEigs[1][index][el] == expectedVectors[index][el]
-
+        print (el)
 
 print(testEigs[0])
 
 dnaEigs,dnaAb = PCAEIGS(dnaNumData)
+
+print("eigenvalues", dnaEigs[0].shape, dnaEigs[0])
+print("total complex", np.sum(np.abs(np.absolute(dnaEigs[0]))))
+print("max complex", np.max(np.abs(np.absolute(dnaEigs[0]))))
+print("totalComplex")
+assert np.sum(np.abs(np.absolute(dnaEigs[0]))) < .00001
 args = list(np.argsort(dnaEigs[0]))
 args.reverse()
 
@@ -91,11 +103,7 @@ newData = dnaEigs[1][args].dot(dnaAb)
 import matplotlib.pyplot as plt
 
 # Create data
-#N = 500
-#x = np.random.rand(N)
-#y = np.random.rand(N)
 colors = [[0,0,0]]
-area = np.pi*3
 
 # Plot
 plt.scatter(newData[0,:], newData[1,:], c=colors, alpha=0.5)
@@ -106,3 +114,21 @@ plt.show()
 print(newData.shape)
 
 #mds
+
+def hamming(data):
+    distanceMatrix = np.zeros((data.shape[0],data.shape[0]))
+    for a in range(data.shape[0]):
+        for b in  range(data.shape[0]):
+            distanceMatrix[a,b] = np.sum(data[a,:] != data[b,:])
+            distanceMatrix[b,a] = distanceMatrix[a,b]
+    return distanceMatrix
+
+
+testHamming = np.array([[1,2,3,4],[1,2,3,4],[2,1,3,4]])
+
+
+
+assert np.sum(hamming(testHamming)) == 8
+
+
+
