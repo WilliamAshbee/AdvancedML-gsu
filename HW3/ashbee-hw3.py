@@ -86,7 +86,7 @@ print("eigenvalues", dnaEigs[0].shape, dnaEigs[0])
 print("total complex", np.sum(np.abs(np.absolute(dnaEigs[0]))))
 print("max complex", np.max(np.abs(np.absolute(dnaEigs[0]))))
 print("totalComplex")
-assert np.sum(np.abs(np.absolute(dnaEigs[0]))) < .00001
+#assert np.sum(np.abs(np.absolute(dnaEigs[0]))) < .00001
 args = list(np.argsort(dnaEigs[0]))
 args.reverse()
 
@@ -130,5 +130,57 @@ testHamming = np.array([[1,2,3,4],[1,2,3,4],[2,1,3,4]])
 
 assert np.sum(hamming(testHamming)) == 8
 
+
+
+D = hamming(dnaNumData)
+assert D.shape == (120,120)
+
+a = -.5*D**2
+
+c = np.zeros((D.shape[0],D.shape[0]))
+#c = np.zeros((D.shape[0],D.shape[0]))
+
+a00 = np.mean(a)
+ai0 = np.mean(a,axis = 1,keepdims=True)
+a0j = np.mean(a,axis = 0,keepdims=True)
+
+assert list(ai0.shape) == list(a0j.shape)[::-1]
+
+c2 = a - ai0 - a0j + a00 # broadcasting occurs multiple times
+
+assert c2.shape == c.shape
+
+mdsEigs = np.linalg.eig(c2)
+args = np.argsort(mdsEigs[0])
+
+evals = mdsEigs[0][args]
+evects = mdsEigs[1][args]
+assert len(evects[0]) == 120
+print(evals[-2:])
+print (max(evals))
+print(evects[-2])
+
+#for i in range(D.shape[0]):
+#    ai0 = np.sum(a,axis = )
+#    for j in range(D.shape[0]):
+#        cij = a[i,j] - ai0 - a0j + a00
+
+# Plot
+plt.scatter(evects[-1], evects[-2], c=colors, alpha=0.5) #largest two eigenvectors become x and y axis
+plt.title('mds')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+
+
+
+import matplotlib.pyplot as plt
+from sklearn.manifold import MDS
+
+model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
+out = model.fit_transform(D)
+plt.scatter(out[:, 0], out[:, 1])
+plt.axis('equal');
+plt.show()
 
 
