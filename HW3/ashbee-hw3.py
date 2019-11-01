@@ -180,7 +180,9 @@ from sklearn.manifold import MDS
 model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
 out = model.fit_transform(D)
 plt.scatter(out[:, 0], out[:, 1])
-plt.axis('equal');
+plt.axis('equal')
 plt.show()
 
 
+#https://jakevdp.github.io/PythonDataScienceHandbook/05.09-principal-component-analysis.html
+#https://jakevdp.github.io/PythonDataScienceHandbook/05.10-manifold-learning.html

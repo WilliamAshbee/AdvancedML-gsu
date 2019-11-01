@@ -53,3 +53,17 @@ plt.scatter(out[:, 0], out[:, 1])
 plt.axis('equal');
 plt.show()
 
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+pca.fit(dnaNumData)
+
+print(pca.components_)
+X_pca = pca.transform(dnaNumData)
+
+print(X_pca.shape)
+plt.scatter(X_pca[:,0], X_pca[:, 1])
+plt.axis('equal');
+plt.show()
+
+#https://jakevdp.github.io/PythonDataScienceHandbook/05.11-k-means.html
