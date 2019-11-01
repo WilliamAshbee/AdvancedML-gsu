@@ -48,8 +48,8 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
 
 model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
-out = model.fit_transform(D)
-plt.scatter(out[:, 0], out[:, 1])
+mdsOut = model.fit_transform(D)
+plt.scatter(mdsOut[:, 0], mdsOut[:, 1])
 plt.axis('equal');
 plt.show()
 
@@ -67,3 +67,26 @@ plt.axis('equal');
 plt.show()
 
 #https://jakevdp.github.io/PythonDataScienceHandbook/05.11-k-means.html
+
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(mdsOut)
+y_kmeans = kmeans.predict(mdsOut)
+
+plt.scatter(mdsOut[:, 0], mdsOut[:, 1], c=y_kmeans, s=50, cmap='viridis')
+
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
+
+plt.show()
+
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(X_pca)
+y_kmeans = kmeans.predict(X_pca)
+
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y_kmeans, s=50, cmap='viridis')
+
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5);
+
+plt.show()
